@@ -25,13 +25,9 @@ def transform_subdir(root):
                  write_fft(path + "/" + f)
                  write_mfcc(path + "/" + f)
 
-#transform_subdir("./music")
+transform_subdir("./music")
 
-def construct_tenfold(data_array):
-    
-    
-
-
+#def construct_tenfold(data_array):
 
 class TestSet:
     def __init__(self, data_array):
