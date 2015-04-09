@@ -30,9 +30,7 @@ data Class = Blues | Classical | Country | Disco |
              Hiphop | Jazz | Metal | Pop | Reggae | Rock
            deriving (Eq, Enum, Show)
 
-type FeatureMatrix = R.Array R.U R.DIM2 Double
 type FeatureVector = R.Array R.U R.DIM1 Double
-type ClassVector = R.Array R.U R.DIM1 Double
 type WeightMatrix = R.Array R.U R.DIM2 Double
 type DeltaMatrix = R.Array R.U R.DIM2 Double
 

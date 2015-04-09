@@ -1,13 +1,16 @@
+module Main where
 
-import qualified Data.Array.Repa as R 
-import Text.Parsec
+import Data.Maybe (catMaybes)
 import Data.List
-import System.Random
-import System.IO
+
+import System.IO (hGetContents, IOMode(ReadMode), openFile)
+
+import Control.Monad.State.Lazy
 
 import System.Directory (getDirectoryContents)
 
 import Parsing
+import LogisticRegression
 
 type Location = String
 
@@ -20,13 +23,15 @@ lambda, eta, eta_not :: Double
 eta = 0.001
 eta_not = 0.001
 lambda = 0.001
-n = 20.0
+
+n :: Int
+n = 20
 
 classes :: [] Class
 classes = [Blues .. Rock]
 
-t :: (Integral a) => a
-t = genericLength classes
+t :: Int
+t = length classes
 
 test_locations :: [(,) Class Location]
 test_locations = zip [Blues .. Country] $ map ("./music/" ++) ["blues/", "classical/", "country/"]
@@ -37,10 +42,6 @@ class_locations = zip classes $ map ("./music/" ++) ["blues/", "classical/", "co
                                                        "metal/", "pop/", "reggae/",
                                                        "rock/"
                                                       ]
- 
-tenFold :: Int ->  [] Instance -> [] DataSet
-tenFold seed all_data = undefined
-  where generator = mkStdGen seed
 
 main :: IO ()
 main = do
@@ -52,4 +53,11 @@ main = do
                                          hGetContents >>=
                                          \x -> return $ buildInstance c x)
                          ) class_files :: IO [Maybe Instance]
+
+  let instances = catMaybes class_contents
+      result = evalStateT logisticRegression (initState instances)
   return ()
+
+
+initState :: [Instance] -> LRState
+initState = undefined
