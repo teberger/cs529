@@ -4,13 +4,15 @@ import Data.Maybe (catMaybes)
 import Data.List
 
 import System.IO (hGetContents, IOMode(ReadMode), openFile)
+import System.Directory (getDirectoryContents)
 
 import Control.Monad.State.Lazy
 
-import System.Directory (getDirectoryContents)
-
 import Parsing
 import LogisticRegression
+
+import qualified Data.Array.Repa as R
+import Data.Array.Repa.Algorithms.Randomish
 
 type Location = String
 
@@ -37,11 +39,11 @@ test_locations :: [(,) Class Location]
 test_locations = zip [Blues .. Country] $ map ("./music/" ++) ["blues/", "classical/", "country/"]
 
 class_locations :: [(,) Class Location]
-class_locations = zip classes $ map ("./music/" ++) ["blues/", "classical/", "country/",
-                                                       "disco/", "hiphop/", "jazz/",
-                                                       "metal/", "pop/", "reggae/",
-                                                       "rock/"
-                                                      ]
+class_locations = zip classes $ map ("./music/" ++) ["blues/", "classical/", "countr/",
+                                                     "disco/", "hiphop/", "jazz/",
+                                                     "metal/", "pop/", "reggae/",
+                                                     "rock/"
+                                                    ]
 
 main :: IO ()
 main = do
@@ -55,9 +57,10 @@ main = do
                          ) class_files :: IO [Maybe Instance]
 
   let instances = catMaybes class_contents
-      result = evalStateT logisticRegression (initState instances)
+      result = evalStateT gradientDescent (initState instances)
   return ()
 
-
-initState :: [Instance] -> LRState
+initState :: [Instance] -> GDState
 initState = undefined
+  where weightMatrix = randomishDoubleArray (R.Z R.:. t R.:. (n+1)) 0 1 seed
+        seed = 123

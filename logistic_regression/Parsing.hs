@@ -63,6 +63,8 @@ parseContent string = case parse doubleList "" string of
 
 --doubleList :: Parsec String [Double]
 doubleList = do
+  optional . char $ '-'
+  
   d <- double
   char ',' >> spaces
   ds <- doubleList
